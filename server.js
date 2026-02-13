@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -9,9 +10,15 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect("mongodb+srv://eshaansharma07:eshaan123@fullstack.j2qyedu.mongodb.net/CardsDB")
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
+
+
+// Root Route (Required for Koyeb Health Check)
+app.get("/", (req, res) => {
+  res.send("Playing Card API Running");
+});
 
 
 // CREATE Card
@@ -43,6 +50,10 @@ app.delete("/cards/:id", async (req, res) => {
   res.json({ message: "Card Deleted" });
 });
 
-app.listen(8000, () => {
-  console.log("Server running on port 8000");
+
+// IMPORTANT FOR KOYEB
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });
